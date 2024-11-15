@@ -8,4 +8,39 @@ Question:
 How would you structure the MediaFile, AudioFile, and VideoFile classes so the player works consistently with all file types?
 
 Answer:
+1. FileType enum:
+```csharp
+enum FileType {
+    Audio,
+    Video,
+}
+```
 
+2. MediaFile abstract class
+    - Abstract methods (play, pause, stop)
+
+3. AudioFile, VideoFile concrete classes inherits MediaFile
+    - Implements play(), pause(), stop()
+    - Accepts FileType in constructor()
+
+4. Player class which uses switch case to identify fileType and set player. Pseudocode below: -
+
+```csharp
+public class Player
+{
+    private Player() {}
+
+    public static void GetPlayer(FileType fileType)
+    {
+        switch (fileType)
+        {
+            case FileType.Audio:
+                return new AudioPlayer();
+            case FileType.Video:
+                return new VideoPlayer();
+            default:
+                throw new ArgumentException("fileType is invalid!");
+        }
+    }
+}
+```
