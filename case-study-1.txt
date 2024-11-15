@@ -1,0 +1,14 @@
+Background: You need to build a rest API where User can login and logout, 
+User can upload a csv file with keyword. With each keyword software should 
+perform a search to google with a network call. Result from the network call 
+should be stored in database.
+
+Question: What are the classes you might need in this software solution?
+
+Answer:
+1. User class (discuss with interviewer that we need role based control or not)
+2. Role, UserRole class (add if RBAC asked)
+3. If session based API, it will add more tables for storing user sessions (optional)
+4. CsvUpload class (each entry for each upload of csv)
+5. Results class (one to many with CsvUpload class)
+6. Optionally store the CSV file in a file based system if data is crucial.

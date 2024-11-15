@@ -1,0 +1,41 @@
+Background: 
+An event management system allows users to view available events, make reservations, 
+pay for tickets, and receive notifications. Each event has specific seat allocations, 
+which need real-time updates. Cancellations should be handled with refund options, 
+and users must be notified of successful reservations or cancellations. 
+
+Question: 
+What are the classes you might need in this software solution?
+
+Answer:
+1. User 
+    - Guid ID
+    - string Username
+    - rest of the properties..
+
+2. Event 
+    - Guid ID
+    - string Name
+    - string Location
+    - Guid CreatedBy // Foreign Key to User // may come from audit
+    - Date CreatedAt // may come from audit
+    - Date StartTime
+    - Date EndTime
+    - int TotalSeats // 40
+    - int LeftSeats // 39 (will decrement on each reservation)
+    - int PricePerSeat
+
+3. Reservation 
+    - Guid ID
+    - Guid EventID // Foreign Key to Event
+    - Guid ReservedBy // Foreign Key to User // may come from audit
+    - Date ReservedAt // may come from audit
+    - int ReservationNumber // a unique ID provided to guest (avoid providing the Primary Key as his Unique ID for entrance.)
+    - string ReservationStatus // reserved, cancelled
+
+4. Payment
+    - Guid ID
+    - Guid ReservationID // Foreign Key to Reservation table
+    - int PaymentAmount
+    - string PaymentMethod // bkash, nagad, card
+    - string PaymentStatus // initiated, completed, failed

@@ -1,0 +1,28 @@
+Background: 
+A payroll system calculates salaries for different employee types. 
+A general Employee class calculates salary based on hours worked, while ContractEmployee 
+(a derived class) might have a different payment calculation, like a fixed contract rate. 
+The payroll system processes all employee types and expects consistent results.
+
+Question: 
+How would you design the Employee and ContractEmployee classes to ensure the 
+payroll system handles both without needing special conditions?
+
+Answer:
+1. EmployeeType class (Guid ID, string Type) // Type=Permanent, Contractual
+
+2. Employee abstract class (Guid ID, Guid EmployeeTypeID, string Name, string Email, string Phone, 
+    Salary Salary, int CalculateSalary())
+    - Salary prop is the navigation prop to Salary entity
+    - CalculateSalary() sets the calculated salary inside Salary entity
+
+3. GeneralEmployee, ContractualEmployee inherits Employee
+    i.   no database table will be created for derived types
+    ii.  will contain core domain-specific logic e.g CalculateSalary()
+    iii. one class per employee type (increase in type increases a table)
+
+4. Salary class (Guid ID, Guid EmployeeID, int BaseSalary, int GrossSalary, Date EffectiveDate)
+
+5. SalaryLog class (Guid ID, Guid SalaryID, Guid EmployeeID, int BaseSalary, int GrossSalary, Date EffectiveDate)
+    - on each update to Salary Table, a SalaryLog entry is inserted
+    - so that all changes to an employee's salary is logged
