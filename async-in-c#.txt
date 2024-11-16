@@ -1,0 +1,154 @@
+# Async programming in C# (Deep Dive)
+
+Ref: https://medium.com/@sohamgalande7/mastering-asynchronous-programming-in-c-a-deep-dive-into-async-await-5b29ff3c44a0
+
+Async programming allows to handle the following tasks without blocking the main thread:
+    - I/O operations
+    - Network calls
+    - File system operations
+    - and much more..
+
+async keyword
+    - allows a method to be asynchronous
+    - but doesn't make a method asynchronous by itself
+
+await keyword
+    - used to pause the execution of an async method until 
+    the awaited task completes.
+
+** A synchronous method can be used as an async method and awaited using 'Task.Run()'
+
+```
+public async Task<int> GetDataAsync()
+{
+    // The ComputeData() is used as a non blocking call through it is synchronous.
+    int data = await Task.Run(() => ComputeData());
+    return data;
+}
+```
+
+** How await helps
+```
+var todo = await _todoService.GetTodoByIdAsync(id); // Execution pauses here
+```
+
+It might seems await blocks execution because it pauses the method execution.
+But actually it frees the main thread and return thread control to the caller.
+
+The awaited call is run by another thread of the machine.
+Once done, the main thread unpauses the execution of the method.
+
+** Case Study:
+If two customers simultaneously hit GET /todo, api,
+- the main thread will start executing the endpoint for Customer 01.
+- The main thread will be freed when the call reaches to the awaited call
+- The awaited call will be dealt with another thread
+- Meanwhile the main thread will start executing the endpoint for Customer 02.
+
+** Question:
+How does it remember the values of the variables that were used for Customer 01 ??
+
+Answer:
+Context switching in threadpool which is a costly operation.
+That is where Golang shines over C# with its inbuilt concurrency model.
+
+
+Task in C#:
+    - represents an ongoing operation that doesn't return a value
+    - normally when we await a call, we get the response which is deceptive
+    because without using await, Task would represent the operation, not the result!
+
+Task: Represents an ongoing operation that doesn’t return a value.
+
+```
+public async Task PerformOperationAsync()
+{
+    // It frees the main thread for 3 seconds, where Thread.Sleep() would block the thread.
+    await Task.Delay(3000);
+}
+```
+
+Task: Represents an ongoing operation that returns a value of type T.
+
+```
+public async Task<int> CalculateSumAsync(int a, int b)
+{
+    return await Task.Run(() => a + b);
+}
+```
+
+** async void: 
+Should be used sparingly for asynchronous event handlers.
+Unlike Task, it doesn't provide a way to track the operation's completion or handle exceptions.
+
+```
+public async void Button_Click(object sender, EventArgs e)
+{
+    await PerformOperationAsync();
+}
+```
+
+** Blocking on Async Code (NEVER DO THIS!!) using .Wait() or .Result on an async call
+
+```
+public void FetchData()
+{
+    // Makes the method behave synchronously blocking the Main thread.
+    var data = GetDataAsync().Result; // Avoid this!
+}
+```
+
+** Mixing Async and Blocking Code:
+
+Mixing asynchronous and synchronous code can lead to complex and error-prone code. For example, 
+calling Task.Run() from an async method may lead to unnecessary thread switching and performance issues.
+
+```
+public async Task<int> MixedMethodAsync()
+{
+    // Mixing async and blocking code
+    return await Task.Run(() => SomeBlockingOperation());
+}
+```
+
+*Best Practice: Keep your whole code asynchronous from top to bottom.
+Avoid wrapping synchronous code in 'Task.Run()' unnecessarily.
+
+
+## When is 'Task.Run()' appropriate? / When you must use 'Task.Run()'?
+
+- In a Desktop app (e.g., WPF, Winforms), to keep the UI responsive, you can hand over
+    synchronous code execution to Task.Run()
+
+- In a Web API, everything is already under async-await.
+    Only if you truly have a heavy CPU-intensive task, that is becoming a bottleneck for the
+    api performance, use Task.Run() to offload the task. Otherwise, not.
+
+## When to avoid overusing 'Task.Run()'?
+
+- Unnecessary Thread switching:
+    Wrapping each method in Task.Run() creates a new thread pool thread everytime.
+    Unnecessary use of Task.Run() for normal usecases would burden the threadpool because
+    each context switching between thread pool threads is very costly to the CPU!
+
+- Scalability issues in rest api:
+    In a Web API, the server already uses thread pool threads to handle requests. Using Task.Run
+    adds more thread to the thread pool which potentially reduces scalability.
+
+## Best Practices for Long Running Synchronous methods:
+
+- Convert to whole async code using 'async-await' if possible.
+- Use 'Task.Run' Sparingly for Truly CPU-Bound Code.
+
+## Avoiding Unobserved Exceptions:
+
+- If an asynchronous method that throws an exception is not awaited, the exception may go 
+unobserved, leading to application crashes or unexpected behavior.
+
+Best Practices for Async Programming:
+- Always use async-await
+- Avoid async void, use async Task (reason stated above)
+
+## Testing Async Methods:
+When writing unit tests for asynchronous methods, use Assert.ThrowsAsync to ensure your tests handle error correctly.
+Use normal async await to test your method runs properly in happy path. Don't block using Task.Run() or Task.Wait() for testing happy path.
