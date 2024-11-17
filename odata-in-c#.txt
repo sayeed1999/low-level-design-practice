@@ -1,0 +1,68 @@
+# OData
+
+OData (Open Data Protocol) is an open protocol by Microsoft, that defines a set of best practices
+for building & consuming Restful APIs.
+
+Data exposed by the OData service is described by an EDM (Entity Data Model), while JSON and AtomPub
+are used for message encoding.
+
+Ref: https://code-maze.com/aspnetcore-webapi-using-odata/
+
+- get all entries
+`GET /odata/companies`
+
+- query for a specific entry, by providing its ID
+`GET /odata/companies(23)`
+
+- request the top 5 results, after skipping the first 10 entries
+`GET /odata/companies?$top=5&$skip=10`
+
+– Get the top 5 entries
+`GET /odata/companies?$top=5`
+
+- Get the total entry count (along with all the entries)
+`GET /odata/companies?$count=true`
+
+- Get entries where city = 'New York'
+`GET /odata/companies?$filter=city eq 'New York'`
+
+- Get entries where city contains 'York'
+`GET /odata/companies?$filter=contains(city, 'York')`
+
+– Order entries by company name
+`GET /odata/companies?$orderby=Name`
+
+- Return only the ID and Name of all companies
+`GET /odata/companies?$select=ID,Name`
+
+- Include also the Products produced by the companies
+`GET /odata/companies?$expand=Products`
+
+- Get all companies whose size is greater than 20 including the total result count.
+Each company should also include their product information.
+
+`GET /odata/companies?$filter=Size gt 20&$count=true&$expand=Products`
+
+```sample response
+{
+  "@odata.context": "https://localhost:7004/odata/$metadata#Companies(Products())",
+  "@odata.count": 3,
+  "value": [
+    {
+      "ID": 1,
+      "Name": "Company A",
+      "Size": 25,
+      "Products": [
+        {
+          "ID": 1,
+          "Name": "Product A",
+          "Price": 10
+        },
+        // -> more products by this company
+      ]
+    },
+    
+    // --> more companies and products here
+  ]
+}
+```
