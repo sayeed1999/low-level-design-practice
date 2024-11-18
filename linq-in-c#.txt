@@ -1,0 +1,95 @@
+# Linq has 3 types of syntax:
+
+- Query syntax
+- Method syntax
+- Hybrid syntax
+
+## Find the sum of all ints greater than 5
+
+```
+var sum = (from x in integers
+          where x > 5
+          select x).Sum();
+```
+
+# IEnumerable vs IQueryable
+
+IEnumerable -> when we want to work with in-memory data, data source is not huge
+IQueryable -> when we want to query data from some data source
+
+- IEnumerable executes in the client memory
+- IQueryable executes on the data source
+
+# Different linq method usages
+
+## GROUP: You have Students and Grades table. Groups students by their grade.
+
+```query syntax
+    from student in Students
+    group student by student.GradeID into studentGroup
+    select new 
+    {
+        gradeID = studentGroup.Key,
+        students = studentGroup
+}
+```
+
+```method syntax
+students
+    .Group(student => student.GradeID)
+    .Select(studentGroup => new 
+    { 
+        gradeID: studentGroup.Key,
+        students = studentGroup
+    })
+```
+
+## JOIN: Join Students with Grades to display student name with grade
+
+```query syntax
+    from st in students
+    join gr in groups on st.GradeID equals gr.ID
+    select new
+    {
+        studentName = st.Name,
+        grade = gr.Grade,
+    }
+```
+
+```method syntax
+    students.Join(
+        grades, // table to join with
+        student => student.GradeID, // param1 to compare
+        grade => grade.ID, // param2 to compare
+        (student, grade) => new
+        {
+            studentName = student.Name,
+            grade = grade.Grade,
+        }
+    )
+```
+
+## DISTINCT: Remove duplicate elements
+
+- numbers.Distinct()
+- (from number in numbers select number).distinct()
+
+## UNION: Combine two sequences, removing duplicates
+
+- numbers1.Union(numbers2)
+- (from number in numbers1 select number).union(numbers2)
+
+## INTERSECT: returns common to both sequences
+
+- numbers1.Intersect(numbers2)
+- (from number in numbers1 select number).intersect(numbers2)
+
+## EXCEPT: returns elements in the first sequence that are not in the second
+
+- numbers1.Except(numbers2)
+- (from number in numbers1 select number).except(numbers)
+
+## AGGREGATE: Aggregate method in LINQ is used to apply an accumulator over a sequence.
+
+e.g int total = marks.Aggregate((x, y) => x + y);
+string skills = skills.Aggregate((x, y) => x + ", " + y):
