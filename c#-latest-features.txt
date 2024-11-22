@@ -1,0 +1,92 @@
+# C# 13 features
+
+## params improved:
+
+previously params modifier was limited to array types.
+now params modifier can be used with any collections type.
+
+```
+public void Concat<T>(params ReadOnlySpan<T> items)
+{
+    for (int i=0; i<items.Length; i++)
+    {
+        Console.Write(items[i]);
+        Console.Write(" ");
+    }
+    Console.WriteLine();
+}
+```
+
+## New lock object
+
+The .NET 9 runtime includes a new type for thread synchronization, the `System.Threading.Lock` type.
+This type provides better synchronization through its API. No code change needed except the namespace.
+
+## New escape sequence (\e)
+
+You can use \e as a character literal escape sequence for the ESCAPE character.
+
+## Implicit index access
+
+"from the end" (^) operator is now allowed inside object initialization. ??
+
+## More partial members
+
+You can now declare partial properties and indexers, previously it was only partial classes
+
+# C# 12 features
+
+## Primary constructors in class & struct
+
+Previously primary constructors was for only record types. Now primary constructors also support
+in class and struct.
+
+When primary constructor is present, all explicitly declared constructors must call :this()
+
+## New syntax of collection expression [] comes with spread operator e.g., ..e
+
+List<int> l1 = [1, 2,3];
+List<int> l2 = [4,5,6];
+List<int> l4 = [7,8,9];
+
+List<int> merged = [.. l1, .. l2, .. l3];
+
+## Allows passing readonly references `readonly ref`
+
+ref is used to pass reference types, but sometimes we dont want to allow modifying the reference type.
+so c# introduced 'readonly ref' for that.
+
+## Default Lambda parameters
+
+Now we can pass default values to parameters of lambda functions
+
+# C# 11 features
+
+## Raw string literals with three quote (""")
+
+var string = """
+            This is a long message.
+            It has several lines.
+                Some are indented
+                        more than others.
+            Some should start at the first column.
+            Some have "quoted text" in them.
+            """;
+
+# C# 10 features
+
+## Record structs
+
+You can use record structs for value type in objects
+You can clarify a record is a reference type by using record classes
+
+## Global using directive
+
+You can use global before any using directive to tell the compiler that the directive
+applies to all source files in the compilation.
+
+## File scoped namespace declaration.
+
+namesapce ABC; instead of namespace ABC {}
+
+## 
