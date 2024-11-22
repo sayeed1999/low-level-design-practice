@@ -1,0 +1,124 @@
+# Design Patterns
+
+Creational Design Pattern
+  - deals with how object is created
+  - object pool, prototype, factory, abstract factory, builder, singleton
+
+Structural Design Pattern
+
+Behavioral Design Pattern
+
+# Creational Design Pattern
+
+## Object Pool Pattern
+
+Connection Pool: Create a number of connections of fixed size. Distribute those connections to all requested clients.
+E.g Pool Size = 50, Requests = 200, 200 reqs are served with the 50 pools in queue manner.
+
+## Prototype Pattern
+
+For game development, you need 50-100 soldiers, weapons, etc.
+When starting the game, create one instance of soldier, weapon, and cache its configurations.
+Later, when player wants 500 soldiers, just load from cache and Soldier.Clone() 50x times.
+
+## Factory Pattern (one group of object)
+
+SMSFactory -> Grameenphone, Banglalink, Airtel
+
+## Abstract Factory Pattern (groups/families of objects)
+
+NotificationFactory -> SMSFactory, EmailFactory
+SMSFactory -> Grameenphone, Banglalink, Airtel
+EmailFactory -> Email, Twilio
+
+## Builder Pattern
+
+- fit when a class has thousands of optional parameters! (tick)
+- not fit if the no. of required parameters change in a class! (cross)
+- Uses separate Builder class instead of using prop setters directly!
+- Gives immutability to main object as the builder class doesn't contain any setters
+
+## Singleton Pattern
+
+# Structural Design Pattern
+
+## Proxy Pattern
+
+Forward Proxy : hides client from the servers
+Reverse Proxy: hides servers from the client
+
+Why is Nginx a reverse proxy?
+=> Nginx hides servers from client.
+
+## Facade Pattern
+
+Some Manager class like OrderManager, PaymentManager which encapsulates multiple method calls or
+multiple external service calls into a single method call that gives a very cleaner method call
+to client. e.g Calling Payent Manager from Payment Handler.
+
+## FlyWeight Pattern
+
+If each like emoji has 200kb, I want to produce 50 like emojis, it would be 200*50kb memmory
+consumption in frontend. `var like = new Like()`
+- Can optimize intrinsic property creation
+- Cannot optimize extrinsic property creation
+
+```
+var m = new Media();
+var likes = [
+    new Like(m), // 1st like
+    new Like(m),
+    ...
+    ...
+    new Like(m), // 50th like 
+];
+```
+
+## Decorator Pattern
+
+To extend a third-party library or customize it according to business needs, we can use a 
+Decorator class which wraps the original class from the third-party library.
+
+- Helps to add extra functionality
+- Helps to customize some functionality
+
+## Adapter Pattern
+
+You have integrated different APIs from different payment services, but all of them doesn't
+response in a unified format. You cannot ask their team to change their API!
+
+E.g., different bank returns different response formats
+- DBBL -> [amount]
+- City -> {amount}
+- BBL -> {totalAmount}
+
+Steps:-
+1. Create an adapter class for each of the 3rd party services.
+2. Modify their response and sync to your interface.
+```
+public interface IResponse {
+    float amount;
+}
+```
+
+## Composite Pattern
+
+# Behavioral Design Pattern
+
+## Strategy Pattern
+
+**Similar to Factory, but not same!
+
+- In Factory, the Factory class decides in runtime whch instance will get created
+- In Strategy, the client i.e Main() program decides which algo will be used not, the factory creator
+
+```main.cs
+var crop = new Crop();
+var process = new ImageProcess(crop);
+var rotate = new Rotate();
+process = new ImageProcess(rotate);
+```
+
+## Chain of Responsibility Pattern
+
+- Used in middleware pipeline building
