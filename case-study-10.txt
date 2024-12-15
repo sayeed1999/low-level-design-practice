@@ -1,0 +1,36 @@
+Background: 
+An e-commerce platform manages products with various types, such as physical goods, 
+digital downloads, and services. Physical goods need methods for shipping, inventory tracking, 
+and delivery, while digital products only require download and licensing methods. 
+Service-based products may need scheduling functionality. 
+
+The product interface should avoid imposing irrelevant methods on different product types.
+
+Question: 
+How would you design interfaces for these different product types?
+
+Answer:
+
+```csharp
+
+public interface IProduct {
+    // common method definitions
+}
+
+public interface IPhysicalGood : IProduct {
+    void ShipProduct();
+    void TrackInventory();
+    void Deliver();
+}
+
+public interface IDigitalDownload : IProduct {
+    void Download();
+    bool CheckLicenseValidity();
+    void RenewLicense();
+}
+
+public interface IServiceProduct : IProduct {
+    void Schedule();
+}
+
+```

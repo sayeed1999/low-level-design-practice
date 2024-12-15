@@ -1,0 +1,105 @@
+Background: An online store supports various payment types through a PaymentMethod class. 
+Some payment types, like BankTransfer or DigitalWallet, may need additional information 
+to complete the payment. The store expects to handle any payment method uniformly 
+without unexpected errors.
+
+Question: How would you design the PaymentMethod and its subclasses so that the store 
+can process any payment type seamlessly?
+
+Answer:
+
+1. The base class should implement common behaviors and properties.
+2. The base class should hold abstract methods to enforce specific behavior in childs
+    like validating payment & processing payments.
+3. Each payment type should have each derived class with overriden methods to ensure 
+    a smooth payment flow.
+4. Ensure the sub-class handle their specific validation needs, as it is not possible
+    in base class.
+5. Finally, the Payment Process should interact with all the childs through the base interface,
+    not child interfaces, using factory/ strategy pattern.
+    So, the base interface cannot miss the definition of important methods needed to expose.
+
+```csharp
+abstract class PaymentMethod
+{
+    // Must be implemented by sub-class
+    public abstract string Name { get; }
+
+    // Must be implemented by sub-class
+    public abstract bool Validate(out string validationError);
+
+    // Must be implemented by sub-class
+    public abstract bool Pay();
+
+    public virtual void ProcessPayment()
+    {
+        if (Validate(out string validationError))
+        {
+            Pay(); // implemented in derived class
+            Console.WriteLine($"{Name} payment processed successfully!");
+        }
+        else
+        {
+            Console.WriteLine($"Failed to process {Name} payment: {validationError}");
+        }
+    }
+}
+
+class CreditCard : PaymentMethod
+{
+    public string CardNumber {get;set;}
+    public string ExpiryDate {get;set;}
+
+    public override string Name => "Credit Card";
+
+    public override bool Validate(out string validationError)
+    {
+        // validate and set validation error if any
+        if (string.IsNullOrEmpty(CardNumber) || CardNumber.Length != 16)
+        {
+            validationError = "Invalid card number.";
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(ExpiryDate))
+        {
+            validationError = "Expiry date is required.";
+            return false;
+        }
+
+        validationError = null;
+        return true;
+    }
+    
+    public override bool Pay()
+    {
+        // implementation here..
+    }
+}
+
+class BankTransfer : PaymentMethod
+{
+    public string AccountNumber { get; set; }
+    public string BankCode { get; set; }
+
+    public override string Name => "Bank Transfer";
+
+    public override bool Validate(out string validationError)
+    {
+        if (string.IsNullOrEmpty(AccountNumber))
+        {
+            validationError = "Account number is required.";
+            return false;
+        }
+
+        if (string.IsNullOrEmpty(BankCode))
+        {
+            validationError = "Bank code is required.";
+            return false;
+        }
+
+        validationError = null;
+        return true;
+    }
+}
+```

@@ -1,0 +1,77 @@
+Background: A web application requires logging for various events, initially using a 
+specific logging library. However, there might be a need to replace or extend the 
+logging system in the future (e.g., to support a cloud-based logging service or 
+custom logging formats).
+
+Question: How would you design the logging system to allow easy replacement or addition of 
+different logging implementations without modifying the main application logic?
+
+Answer:
+
+```csharp
+public interface ILogger
+{
+    void LogInfo(string message);
+    void LogWarning(string message);
+    void LogError(string message, Exception ex = null);
+}
+public interface IFileLogger : ILogger{}
+public interface ICloudLogger : ILogger{}
+
+public abstract class LoggerBase : ILogger
+{
+    // Centralized log formatting logic
+    private string FormatLog(string level, string message, Exception ex = null)
+    {
+        var logMessage = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {level}: {message}";
+        
+        if (ex != null)
+        {
+            logMessage += $" | Exception: {ex.Message}";
+        }
+
+        return logMessage;
+    }
+
+    // Abstract method that concrete classes must implement to handle the actual logging
+    protected abstract void LogToDestination(string message);
+
+    public void LogInfo(string message)
+    {
+        var formattedMessage = FormatLog("INFO", message);
+        LogToDestination(formattedMessage);
+    }
+
+    public void LogWarning(string message)
+    {
+        var formattedMessage = FormatLog("WARNING", message);
+        LogToDestination(formattedMessage);
+    }
+
+    public void LogError(string message, Exception ex = null)
+    {
+        var formattedMessage = FormatLog("ERROR", message, ex);
+        LogToDestination(formattedMessage);
+    }
+}
+
+public class FileLogger : LoggerBase, IFileLogger
+{
+    protected override void LogToDestination(string message)
+    {
+        // Actual file logging logic here
+        Console.WriteLine($"File Log: {message}");
+        // Example: Write message to a file (e.g., using StreamWriter)
+    }
+}
+
+public class CloudLogger : LoggerBase, ICloudLogger
+{
+    protected override void LogToDestination(string message)
+    {
+        // Actual cloud logging logic here
+        Console.WriteLine($"Cloud Log: {message}");
+        // Example: Send message to a cloud logging service (e.g., AWS, Azure)
+    }
+}
+```
