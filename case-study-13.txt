@@ -1,0 +1,72 @@
+// Strategy Pattern Example using Payment Gateway
+
+public interface IPaymentGateway
+{
+    bool ProcessPayment(decimal amount, string paymentDetails);
+    bool ValidatePaymentDetails(string paymentDetails);
+    bool RefundPayment(string transactionId);
+}
+
+public class PayPalGateway : IPaymentGateway
+{
+    public bool ProcessPayment(decimal amount, string paymentDetails)
+    {
+        // PayPal-specific payment processing logic
+        Console.WriteLine($"Processing PayPal payment of {amount} for {paymentDetails}");
+        return true; // Assume success for simplicity
+    }
+    
+    // rest of the code...
+}
+
+public class StripeGateway : IPaymentGateway
+{
+    public bool ProcessPayment(decimal amount, string paymentDetails)
+    {
+        // Stripe-specific payment processing logic
+        Console.WriteLine($"Processing Stripe payment of {amount} for {paymentDetails}");
+        return true; // Assume success
+    }
+
+    // rest of the code...
+}
+
+public class PaymentProcessor
+{
+    private readonly IPaymentGateway _paymentGateway;
+
+    // Dependency injection of the chosen payment gateway
+    public PaymentProcessor(IPaymentGateway paymentGateway)
+    {
+        _paymentGateway = paymentGateway;
+    }
+    
+    // Optionally, you can change gateway outside ctor.
+    // Set the payment strategy based on user selection
+    //public void SetPaymentStrategy(IPaymentStrategy paymentStrategy)
+    //{
+    //    _paymentStrategy = paymentStrategy;
+    //}
+
+    public void ProcessPayment(decimal amount, string paymentDetails)
+    {
+        if (_paymentGateway.ValidatePaymentDetails(paymentDetails))
+        {
+            bool paymentSuccessful = _paymentGateway.ProcessPayment(amount, paymentDetails);
+            if (paymentSuccessful)
+            {
+                Console.WriteLine("Payment processed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Payment failed.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid payment details.");
+        }
+    }
+
+    // rest of the code...
+}
