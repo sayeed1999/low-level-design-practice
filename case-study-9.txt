@@ -1,0 +1,55 @@
+Background: An e-commerce platform applies different discounts based on promotions or 
+customer segments (e.g., seasonal discounts, loyalty discounts, bulk purchase discounts). 
+The marketing team frequently introduces new types of discounts. The system should allow 
+adding new discount types without modifying the code for existing discounts.
+
+Question: How would you design the discount calculation system so that new discount types 
+can be introduced without changing the existing discount logic?
+
+Answer:
+
+```csharp
+
+// Derive each interface for each type of discount so that each can have their own implementation.
+// Follows - OCP (Open-Closed Principle)
+
+interface IDiscount {
+    float CalculateDiscount();
+}
+
+interface INormalDiscount : IDiscount {}
+
+interface ISeasonalDiscount : IDiscount {}
+
+interface ILoyaltyDiscount : IDiscount {}
+
+interface IBulkPurchaseDiscount : IDiscount {}
+
+// Secondly creating each class for each interface making the base class abstract with an abstract implementation.
+// Forcing the child types to have their own discount calculation
+
+abstract class DiscountCalculator : IDiscount
+{
+    // Forced implementation for all derived types.
+    public abstract float CalculateDiscount();
+}
+
+class NormalDiscountCalculator : DiscountCalculator, INormalDiscount
+
+class SeasonalDiscountCalculator : DiscountCalculator, ISeasonalDiscount
+{
+    public override float CalculateDiscount()
+    {
+        // custom calculation here..
+    }
+}
+
+class LoyaltyDiscountCalculator : DiscountCalculator, ILoyaltyDiscount
+{
+    public override float CalculateDiscount()
+    {
+        // custom calculation here..
+    }
+}
+
+```

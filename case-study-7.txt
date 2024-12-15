@@ -1,0 +1,22 @@
+Background: 
+An e-commerce system stores order data in a SQL database. Later, there may be a need to 
+switch to a NoSQL database or another storage method for scalability. The high-level order 
+processing logic should remain unaffected by these changes.
+
+Question: 
+How would you structure the data persistence layer for order data so that the core order 
+processing logic can work with any storage type without modification?
+
+Answer:
+The first idea to solve this is - "Repository Pattern"
+
+Using Repository Pattern, the data access logic is abstracted from business logic despite
+of which database (SQL/ NoSQL) is used.
+
+But another thing to keep in mind,
+
+If the ORM framework you I'm using is already doing this, the I don't need to implement
+another Repository over Repository which would be redundant work & should be avoided.
+
+E.g., in dotnet, EF Core itself follows Repository pattern with Unit of Work.
+But for Dapper, which is another dotnet micro-ORM, it doesn't provide Repository pattern by itself.
