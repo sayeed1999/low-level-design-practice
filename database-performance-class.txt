@@ -2,7 +2,7 @@
 
 ## Query Tips
 
-- Dont use SELECT *
+- Don't use SELECT *
 
 - Always use WHERE
 
@@ -85,3 +85,48 @@ Best Practices on INDEXES
 - Full Text Index
     allows you to create indexes on columns that are not indexable by the standard index types mentioned earlier
     study full text search for clarity e.g searching 'sayeed' in 'i am sayeed' in a column text.
+
+## Index - Best Practices
+
+- Understand the characteristics of the database (OLTP/OLAP)
+
+- Observe the most frequently used queries (top 10-20%)
+    Observe the joins in those queries to find the best columns to create indexes!
+
+- Understand the characteristics of the columns used in queries
+    E.g integer column, unique or not null column - good
+    byte[] - bad
+
+- ** Choose Optimal Storage Location for the index **
+    For example, Storing a Non-Clustered index on a filegroup that is on a different disk
+    than the table filegroup - can improve performance!
+    Because multi disks can be read at the same time. **(VVI)**
+
+- Large number of indexes on a table affect the performance
+    But why??
+
+- Indexing small tables might not be Optimal
+    But small at what level (size/columns)?
+
+- ** Indexes on VIEWS provide performance gains when the view contains
+    aggregations, table joins or both.**
+
+- Don't write multiple queries to update the same row, instead sync in one query
+
+- ntext, text, image, varchar(max), nvarchar(max), and varbinary(max) data types
+    cannot be used for indexing!
+
+
+## Index Fragmentation
+
+What is it?
+
+## Index - Maintenance
+
+### INDEX REBUILD or REORGANIZE?
+
+- Fragmentation < 10% : no action required
+- Fragmentation 10-30% : INDEX REORGANIZE
+- Fragmentation > 30% : INDEX REBUILD
+
+
