@@ -1,0 +1,93 @@
+# Databases
+
+- Key-value: Redis, DynamoDB
+  It can work as cache, queue, leaderboard
+
+- Relational: MySQL, PostgreSQL, Oracle
+  Used mostly in relational schemas
+
+- Graph: Neo4j
+  Data represented as nodes (entities) & edges (relationships)
+  No pivot table is needed. Used in analytical software (horizontal scaling not always needed)
+  Good for model software development
+
+- Columnar: Cassandra, HBase
+  Data are stored in columns
+  Decentralized data and can scale
+  Good for time series data, high throughput and write, high key-value lookup
+
+- Document: MongoDB
+  Schemaless data like json/bson type, no join supported
+  Faster read, but write operation is critical
+  Need good de-normalization capability
+  Easy to scale than MySQL
+
+- Search: ElasticSearch, Solr
+  Full Text Search Engine
+  Advanced Searching capability like Fuzzy Search
+  Usecase more or like document database
+  Typeahead, typotolerant, synonyms, rank
+
+- Geospatial: PostGIS
+  Designed to store and manage Geospatial data
+
+- Time-Series Database: InfluxDB
+  Old data dont update, new data only gets written time to time
+  Need better insert performance, no update performance is needed
+  Better query performance needed for doing live aggregation, live performance based on the time series data
+
+- Multi-Modal database:
+  Better performance from multiple databases
+
+## Key-value database (Redis)
+
+- In memory: cache, queue, pub/sub, leaderboard
+- Uses I/O multiplexing as single threaded
+
+- ** Use bitnami for redis docker as it eases many configurations for replication
+Normal redis docker makes it tough to configure using dockerfile, doesn't work as expected.
+
+- ** Use 03 Sentinel with Redis for doing Corum
+
+Q. Is Redis pull-based or push-based?
+Q. Is RabbitMQ pull-based or push-based?
+
+Q. What is Service Discovery in microsevices? How does it work?
+
+** Peer5 is a video streaming platform that uses multiple redis instances,
+and another redis instance as the Service Discovery.
+
+## Replication in Redis
+
+- One master node, three replica nodes
+- Master works for write, replicas work for reads
+- ** Redis automatically dont forward read requests from master to replica !!
+  Backend logic should do that!
+- When master fails, everything fails as there is only one master!
+
+Q. What Replication increases?
+Ans: 'Scalability': Because now we can serve more requests at a moment of time.
+But not 'availability', because if master is down, whole system is down!
+
+Q. How Sentinel provides High Availability?
+Ans: By setting a sentinel to health check Redis continuously.
+When master is down for a certain period of time, sentinel can promote a replica to master node.
+This way, By promoting a 'Replica' as 'Master', 'Sentinel' ensures more 'availability'.
+When the defected master is re-run, it becomes a replica to the sentinel, because a master is already working!
+
+Q. What is Corum with Sentinel?
+When we have 03 Sentinel instances set, if 2/3 instances say "Redis is Healthy" & 1 says "Unhealthy"
+we take the majority answer.
+
+## Clustering (Algorithmic Sharding) in Redis
+
+When data volume goes up, one server is not enough to handle the load.
+
+Q. Naive approach to decide which master a request should go to.
+Ans: Key -> (CRC16) -> integer number -> mod by n -> gives master no.
+Problem with this approach:
+When no. of nodes increases/decreases, all entries get a different master value.
+Solution of Redis:
+Uses HashSlot to reduces the expense of re-sharding, minimized, not 100% solved.
+
+Resharding means: Rehash all keys & send them to appropriate nodes.
