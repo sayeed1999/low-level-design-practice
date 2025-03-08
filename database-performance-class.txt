@@ -1,0 +1,87 @@
+# Database Performance Masterclass
+
+## Query Tips
+
+- Dont use SELECT *
+
+- Always use WHERE
+
+- Index carefully
+    Indexing improves read performance, but reduces write performance! **Keep in mind**
+
+- Do use Transaction
+    Useful for long running query
+
+- Don't open large dataset
+    You will be sucked!
+
+- Use Parameterized Query
+    SQL Injection
+
+- Test on Large dataset
+    Try to have as big dataset as prod in test env
+    Indexing performance starts to appear after 1 million data
+
+- Don't import bulk data with INSERT
+    Unless strictly necessary
+
+- Don't do SELECT max(ID) from Master when inserting in a Detail table
+    Use SCOPE_IDENTITY, IDENT_CURRENT, avoid @@IDENTITY
+
+- Do avoid Nullable columns unless necessary
+    They consume an extra byte on each nullable column
+
+- Don't use the TEXT datatype unless you are using it for really large data e.g images
+    The TEXT datatype is not flexible to query, is slow and wastes a lot of space if used incorrectly
+
+- Don't use TEMPORARY tables unless strictly necessary
+    Often a sub-query can substitute a temporary table
+
+- Use appropriate datatype (choose datatype size carefully) Varchar/nvarchar/char
+    Use int instead of long unless necessary
+    Use varchar (20) instead of varchar(max)
+    Use varchar (50) instead of varchar(1000) at random
+
+- Don't use ORM, but stored procedure
+    For applications that need large scaling
+
+- Don't use Trigger
+    Learn why? Its almost always avoidable
+
+- Don't use negative searches (age != 18)
+    `SELECT * FROM Customers WHERE RegionID <> 3` - Indexes doesn't work here even created on RegionID column
+
+- Don't use FUNCTION in WHERE clause
+    as it would not work with normal indexes
+
+- Don't use ORDER BY on column that's not indexed!
+    Order by on columns that isn't indexed makes the query too slow due to general iterating **Keep in mind**
+
+- Avoid Join unless needed
+    Why? Avoid if possible, not always. Like Normalization should be done only when needed.
+
+- Avoid Aggregate functions unless needed
+    Why? Avoid if possible, not always.
+
+Best Practices on INDEXES
+
+- **Try to reduce indexes on tables where there are much INSERT/UPDATE/DELETEs **
+- **Try to increase indexes on tables where there are much READ operations **
+
+
+## Index Types
+
+- Heap table
+    No index!
+    Table without primary keys, e,g useful log storing table
+
+- Clustered index
+    Primary key. A table must have it
+
+- Non-Clustered index
+    Index except primary key e.g, unique key
+    Pointer to the clustered index of B-Tree leaf
+
+- Full Text Index
+    allows you to create indexes on columns that are not indexable by the standard index types mentioned earlier
+    study full text search for clarity e.g searching 'sayeed' in 'i am sayeed' in a column text.
