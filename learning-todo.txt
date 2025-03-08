@@ -1,0 +1,28 @@
+inversion of control vs dep injection cs dep inversion
+request delegate vs events
+
+rate limitting
+csrf
+
+normalization & denormalization (study deep database)
+study view and other database related things needed
+indexed views (materialized views) for less frequently changed data
+stored procedures VS functions
+
+components of a request pipeline (one component is middleware, what are the others)
+explicit loading in ef core?
+how do we logout in jwt system?
+how ef core manages connection polling? dynamic connection polling?
+does indexing work on full_text search in postgres? 
+    e.g search 'Muhammad' in 'Muhammad Sayeed Rahman'
+
+select cust_id, count(order_id) from zz
+group by cust_id
+having..
+
+how to know a slow query has indexing or not? EXPLAIN?
+EXPLAIN & ANALYZE?
+how to know in real time which which query is slow? PROFILER!
+why too many indexing can be bad?
+what is timeseries data?
+what aspects to consider to improve raw postgres queries?

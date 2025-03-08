@@ -1,0 +1,22 @@
+# OOAD
+
+1. To achieve abstraction, first we create class to achieve encapsulation.
+2. If they have common behavior that they implement differently, we have to do generalization (interface?)
+3. If they have common code that can be reused, we have to use composition.
+4. Where does inheritance comes here??
+    Inheritance does generalization and composition at a time.
+    Both hieararchial use of code, & sub-type polymorphism.
+    It has a problem. - Why programmers avoid inheritance video!!
+
+# OOD Principle
+
+## Abstraction, encapsulation, generalization - interface, inheritance
+
+## Decompositon:-
+
+- Association: Two objects exist independently, but can interact with one another.
+    e.g many to many 
+- Aggregation: Unidirection association.
+    e.g one to many
+- Composition: A cannot exist without B, A is composed of B.
+    e.g constructor injection!

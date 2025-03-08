@@ -1,0 +1,132 @@
+# Design a facebook.
+
+Ask Feature expectations on users:
+
+: Who will use this?
+: University students.
+
+Some common questions to ask -
+
+- who will use the app?
+- how will they use?
+- where are they geographically located?
+- in which timezone the users are in?
+- how frequently they will use?
+
+Do an assumption on users?
+: Are there 10 million users?
+: Consider less/more..
+
+Estimations on functional & non-functonal:
+
+Functional requirements:
+login, post an image, like an image
+
+Non-functional requirements: 
+how fast the post will be available to friends newsfeed
+how much time will it take to load the feed
+
+
+Back of the envelope calculation:
+1. no of users
+2. how much users monthly
+3. how much users daily
+4. how much query daily per second 
+
+QPS  (Query per second)
+TPS (Transaction per second)
+
+Throughput calculation (estimated value, not exact)
+
+Latency
+Read write ratio
+
+Traffic Estimation: Read heavy or write heavy
+
+Storage Estimation: esitimate how much data daily/monthly/yearly will be generated, & how will you archive the data?
+To estimate this you have to know the volume of data
+
+Memory Estimation: needed for caching, how much data will you cache, which caching strategy will you use?
+
+Estimation can be wrong. But you need to have an estimated goal to design the system.
+
+
+Design Goals
+
+- Latency
+- Consistency vs availability
+    - Weak/Strong/Eventual Consistency
+    - Fallover/Replication
+
+Tradeoffs with CAP theorem
+
+- For banking, Consistency >> availability (data cannot go inconsistent even if unavailable)
+- For social media, availability >> Consistency (server cannot be down, feed should show up always)
+
+
+
+High Level Design
+
+APIs for crucial components
+Database design
+Basic algorithms
+Database diagrams (UML diagram)
+
+
+Detailed design
+
+Scaling the algorithms
+Scaling individual components
+Thinking about the components
+
+
+
+Components
+
+- DNS
+- CDN
+    - pull
+    - push
+- Load Balancers
+    - active - passive
+    - active - active
+    - Layer 4
+    - Layer 7
+
+Layer 4 load balancer has very less latency than Layer 7
+because l4 dont need to unzip the network packets
+
+for knowing application logic we need l7 load balancer
+
+Reverse proxy
+
+
+Caching
+
+** Golden Rule (80-20): Cache most popular 20% data, and handle rest 80% traffic.
+
+- Client-side caching (e.g cache on React or React Native)
+- CDN caching
+- Webserver caching (e.g cache on Nginx on Apache based on last modified time & current time)
+- Application caching (e.g most recent/LRU/other algos)
+- DB caching (e.g cache db response to reduce database reads)
+- Object caching
+
+
+Communications
+
+TCP - most web services are built on tcp
+UDP - video calls, phone calls
+Rest
+RPC
+
+HTTPS can prevent man-in-the-middle-attack!
+
+
+
+Identifying and resolving bottlenecks?
+
+- Single point of failure?
+- Enough replicas? (20% buffer: even if 20% system is down, system should be smooth)
+- Measuring performance
+- Monitoring

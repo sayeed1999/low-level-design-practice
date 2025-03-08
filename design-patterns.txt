@@ -122,3 +122,50 @@ process = new ImageProcess(rotate);
 ## Chain of Responsibility Pattern
 
 - Used in middleware pipeline building
+
+## Bridge Pattern
+
+## Observer Pattern
+
+- can handle spike if a queue is used in between, same in mediator pattern
+
+## Command Pattern
+
+- request needs to be encapsulated in an object for several benefits
+i. operation redo/undo
+
+e.g you convert a task into a object, push to rabbitmq,
+then a Background Job pulls the task as an object/command and executes it.
+
+## Iterator Pattern
+
+- simple iterator e.g yield in c#
+
+## Mediator Pattern
+
+- when communication becomes Spider Web like.
+
+## Memento Pattern
+
+- when you need a snapshot of an object at an point of times
+
+e.g .,
+i. state saving in different stages in desktop games for restarting game from 'last saved'
+ii. state saving in google doc while typing to not lose data
+
+## Template Method Pattern
+
+- Multiple databases use some part of similar code.
+
+## State Pattern
+
+- Each state can be a class & holds it specific business logic
+
+## Visitor Pattern
+
+##### Important Ones: -
+Adapter, Singleton, Bridge, Object Pool, Builder, Factory, Abstract Factory, 
+Proxy, Facade, Prototype (less used), Flyweight (frontend), Decorator, 
+Composite (Ecommerce pricing), Strategy (highly used in multiple objects),
+Chain of Responsibility (middleware), Mediator (air-traffic control uses this),
+Memento (certain case, not always), Template Method (reduce code duplication),
