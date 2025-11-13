@@ -1,0 +1,3 @@
+Background: An application initially uses a local database for user authentication. Later, it might switch to an external identity provider, such as OAuth or SAML. The core authentication and authorization logic should remain unaffected by the change in authentication providers.
+
+Question: How would you design the authentication module so that it can integrate different authentication providers without needing to modify the main authentication logic?
